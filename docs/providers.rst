@@ -188,6 +188,7 @@ You'll need to specify the base URL for your Auth0 domain:
     SOCIALACCOUNT_PROVIDERS = {
         'auth0': {
             'AUTH0_URL': 'https://your.auth0domain.auth0.com',
+            'OAUTH_PKCE_ENABLED': True,
         }
     }
 
@@ -275,7 +276,7 @@ SCOPE:
 REGION:
     Either ``apac``, ``cn``, ``eu``, ``kr``, ``sea``, ``tw`` or ``us``
 
-    Sets the default region to use, can be overriden using query parameters
+    Sets the default region to use, can be overridden using query parameters
     in the URL, for example: ``?region=eu``. Defaults to ``us``.
 
 Bitbucket
@@ -321,6 +322,13 @@ App registration (get your key and secret here)
 
 CILogon OIDC/OAuth2 Documentation
     https://www.cilogon.org/oidc
+
+Clever
+----
+Single sign-on for education
+
+Clever OAUth2 Documentation
+    https://dev.clever.com/docs/classroom-with-oauth
 
 
 Dataporten
@@ -402,6 +410,20 @@ Authentication documentation
 
 Development callback URL
     http://localhost:8000/accounts/draugiem/login/callback/
+
+Drip
+--------
+
+App registration (get your key and secret here)
+    https://www.getdrip.com/user/applications
+
+Authentication documentation
+    https://developer.drip.com/?shell#oauth
+
+Development callback URL
+    https://localhost:8000/accounts/drip/login/callback/
+
+Make sure the registered application is active.
 
 
 Dropbox
@@ -609,7 +631,7 @@ The following Facebook settings are available:
             'EXCHANGE_TOKEN': True,
             'LOCALE_FUNC': 'path.to.callable',
             'VERIFIED_EMAIL': False,
-            'VERSION': 'v7.0',
+            'VERSION': 'v13.0',
         }
     }
 
@@ -677,7 +699,7 @@ VERIFIED_EMAIL:
     risk.
 
 VERSION:
-    The Facebook Graph API version to use. The default is ``v7.0``.
+    The Facebook Graph API version to use. The default is ``v13.0``.
 
 App registration (get your key and secret here)
     A key and secret key can be obtained by
@@ -807,6 +829,29 @@ Optionally, you can specify the scope to use as follows:
       },
     }
 
+Gitea
+------
+
+App registration (get your key and secret here)
+    https://gitea.com/user/settings/applications
+
+Development callback URL
+    http://127.0.0.1:8000/accounts/github/login/callback/
+
+
+Self-hosted Support
+******************
+
+If you use a self-hosted Gitea instance add your server URL to your Django settings as
+follows:
+
+.. code-block:: python
+
+    SOCIALACCOUNT_PROVIDERS = {
+        'gitea': {
+            'GITEA_URL': 'https://your.gitea-server.domain',
+        }
+    }
 
 GitHub
 ------
@@ -962,7 +1007,8 @@ Optionally, you can specify the scope to use as follows:
             ],
             'AUTH_PARAMS': {
                 'access_type': 'online',
-            }
+            },
+            'OAUTH_PKCE_ENABLED': True,
         }
     }
 
@@ -976,6 +1022,28 @@ receive a refresh token on first login and on reauthentication requests
 without involving the user's browser). When unspecified, Google defaults
 to ``online``.
 
+
+Gumroad
+---------
+
+App registration (get your key and secret here)
+    https://help.gumroad.com/article/280-create-application-api
+
+Development callback URL
+    http://localhost:8000/accounts/instagram/login/callback/
+
+
+Hubspot
+--------
+
+App registration (get your key and secret here)
+    https://developers.hubspot.com/docs/api/creating-an-app
+
+Authentication documentation
+    https://developers.hubspot.com/docs/api/working-with-oauth
+
+Development callback URL
+    https://localhost:8000/accounts/hubspot/login/callback/
 
 Instagram
 ---------
@@ -1027,16 +1095,14 @@ Development callback URL
 The following Keycloak settings are available.
 
 KEYCLOAK_URL:
-    The url of your hosted keycloak server, it must end with ``/auth``. For
-    example, you can use: ``https://your.keycloak.server/auth``
+    The url of your hosted keycloak server. For example, you can use: ``https://your.keycloak.server``
 
 KEYCLOAK_URL_ALT:
-    An alternate url of your hosted keycloak server, it must end with ``/auth``. For
-    example, you can use: ``https://your.keycloak.server/auth``
+    An alternate url of your hosted keycloak server. For example, you can use: ``https://your.keycloak.server``
 
     This can be used when working with Docker on localhost, with a frontend and a backend hosted in different containers.
 
-KEYCLOAK_REAML:
+KEYCLOAK_REALM:
     The name of the ``realm`` you want to use.
 
 Example:
@@ -1050,14 +1116,59 @@ Example:
       }
   }
 
+LemonLDAP::NG
+-------------
+
+Create a new OpenID Connect Relying Party with the following settings:
+
+* Exported attributes:
+
+    * ``email``
+    * ``name``
+    * ``preferred_username``
+
+* Basic options:
+
+    * Development Redirect URI: http://localhost:8000/accounts/lemonldap/login/callback/
+
+The following LemonLDAP::NG settings are available.
+
+LEMONLDAP_URL:
+    The base URL of your LemonLDAP::NG portal. For example: ``https://auth.example.com``
+
+Example:
+
+.. code-block:: python
+
+  SOCIALACCOUNT_PROVIDERS = {
+      'lemonldap': {
+          'LEMONLDAP_URL': 'https://auth.example.com'
+      }
+  }
+
 Line
 ----
 
-App registration (get your key and secret here)
-    https://business.line.me
+scope options
+  https://developers.line.biz/en/docs/line-login/integrate-line-login/#scopes
+
+App registration, create a Line login channel (get your channel_id and channel_secret here)
+    https://developers.line.biz/console/
 
 Development callback URL
     http://127.0.0.1:8000/accounts/line/login/callback/
+
+.. code-block:: python
+
+    SOCIALACCOUNT_PROVIDERS = {
+              'line': {
+                  'APP': {
+                      'client_id': 'LINE_LOGIN_CHANNEL_ID',
+                      'secret': 'LINE_LOGIN_CHANNEL_SECRET'
+                  },
+                  "SCOPE": ['profile', 'openid', 'email']
+              }
+          }
 
 
 LinkedIn
@@ -1194,6 +1305,34 @@ browsers may require enabling this on localhost and not support by default and
 ask for permission.
 
 
+MediaWiki
+---------
+
+MediaWiki OAuth2 documentation:
+    https://www.mediawiki.org/wiki/OAuth/For_Developers
+
+The following MediaWiki settings are available:
+
+.. code-block:: python
+
+    SOCIALACCOUNT_PROVIDERS = {
+        'mediawiki': {
+            'REST_API': 'https://meta.wikimedia.org/w/rest.php',
+            'USERPAGE_TEMPLATE': 'https://meta.wikimedia.org/wiki/{username}',
+        }
+    }
+
+REST_API:
+    Base URL of the MediaWiki site's REST API.
+USERPAGE_TEMPLATE:
+    Link template for linking to users. Must have a ``{username}`` format field.
+
+With the default settings, Wikimedia user identities (meta.wikimedia.org) will be used.
+
+App registration for Wikimedia wikis:
+    https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose
+
+
 Microsoft Graph
 -----------------
 
@@ -1201,16 +1340,16 @@ Microsoft Graph API is the gateway to connect to mail, calendar, contacts,
 documents, directory, devices and more.
 
 Apps can be registered (for consumer key and secret) here
-    https://apps.dev.microsoft.com/
+    https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
 
 By default, `common` (`organizations` and `consumers`) tenancy is configured
-for the login. To restrict it, change the `tenant` setting as shown below.
+for the login. To restrict it, change the `TENANT` setting as shown below.
 
 .. code-block:: python
 
     SOCIALACCOUNT_PROVIDERS = {
         'microsoft': {
-            'tenant': 'organizations',
+            'TENANT': 'organizations',
         }
     }
 
@@ -1277,6 +1416,7 @@ Okta
     SOCIALACCOUNT_PROVIDERS = {
         'okta': {
             'OKTA_BASE_URL': 'example.okta.com',
+            'OAUTH_PKCE_ENABLED': True,
         }
     }
 
@@ -1497,6 +1637,12 @@ SCOPE:
     For a full list of scope options, see
     https://developers.pinterest.com/docs/api/overview/#scopes
 
+Pocket
+-------------
+
+App registration (get your consumer key here)
+    https://getpocket.com/developer/apps/
+
 QuickBooks
 ----------
 
@@ -1674,6 +1820,19 @@ Development callback URL
 
 API documentation
     https://api.slack.com/docs/sign-in-with-slack
+    
+
+Snapchat
+-----
+
+App registration (get your key and secret here)
+    https://kit.snapchat.com/manage/
+
+Development callback URL
+    http://example.com/accounts/snap/login/callback/
+
+API documentation
+    https://docs.snap.com/docs/snap-kit/login-kit/overview
 
 
 SoundCloud

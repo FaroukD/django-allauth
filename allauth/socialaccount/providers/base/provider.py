@@ -1,25 +1,6 @@
 from allauth.account.models import EmailAddress
 from allauth.socialaccount import app_settings
-
-from ..adapter import get_adapter
-
-
-class AuthProcess(object):
-    LOGIN = "login"
-    CONNECT = "connect"
-    REDIRECT = "redirect"
-
-
-class AuthAction(object):
-    AUTHENTICATE = "authenticate"
-    REAUTHENTICATE = "reauthenticate"
-    REREQUEST = "rerequest"
-
-
-class AuthError(object):
-    UNKNOWN = "unknown"
-    CANCELLED = "cancelled"  # Cancelled on request of user
-    DENIED = "denied"  # Denied by server
+from allauth.socialaccount.adapter import get_adapter
 
 
 class ProviderException(Exception):
@@ -189,7 +170,7 @@ class ProviderAccount(object):
                     dflt = super(GoogleAccount, self).__str__()
                     return self.account.extra_data.get('name', dflt)
 
-        So we have this method `to_str` that can be overriden in a conventional
+        So we have this method `to_str` that can be overridden in a conventional
         fashion, without having to worry about it.
         """
         return self.get_brand()["name"]

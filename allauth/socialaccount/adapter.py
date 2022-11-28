@@ -128,7 +128,7 @@ class DefaultSocialAccountAdapter(object):
         if len(accounts) == 1:
             # No usable password would render the local account unusable
             if not account.user.has_usable_password():
-                raise ValidationError(_("Your account has no password set" " up."))
+                raise ValidationError(_("Your account has no password set up."))
             # No email address, no password reset
             if app_settings.EMAIL_VERIFICATION == EmailVerificationMethod.MANDATORY:
                 if not EmailAddress.objects.filter(
@@ -150,7 +150,7 @@ class DefaultSocialAccountAdapter(object):
                         # Oops, another user already has this address.
                         # We cannot simply connect this social account
                         # to the existing user. Reason is that the
-                        # email adress may not be verified, meaning,
+                        # email address may not be verified, meaning,
                         # the user may be a hacker that has added your
                         # email address to their account in the hope
                         # that you fall in their trap.  We cannot
